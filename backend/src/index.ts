@@ -1,4 +1,5 @@
 import express from "express";
+import { mainRouter } from "./Routes/index.js"
 
 
 const app = express();
@@ -10,6 +11,8 @@ app.get("/Health", (req, res) => {
         Message: "Index Route Working Fine"
     });
 });
+
+app.use("api/v1/", mainRouter);
 
 
 

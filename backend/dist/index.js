@@ -1,4 +1,5 @@
 import express from "express";
+import { mainRouter } from "./Routes/index.js";
 const app = express();
 app.use(express.json());
 app.get("/Health", (req, res) => {
@@ -6,6 +7,7 @@ app.get("/Health", (req, res) => {
         Message: "Index Route Working Fine"
     });
 });
+app.use("api/v1/", mainRouter);
 app.listen(4000, () => {
     console.log("Server Started at port 4000");
 });
