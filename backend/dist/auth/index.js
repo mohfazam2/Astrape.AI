@@ -1,5 +1,6 @@
 import express from "express";
 import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
 const Prisma = new PrismaClient();
 export const authRouter = express.Router();
 authRouter.get("/Health", (req, res) => {
@@ -33,6 +34,26 @@ authRouter.post("/signUp", async (req, res) => {
     catch (err) {
         return res.status(500).json({
             Msg: "Something Went Wrong",
+            error: err,
+        });
+    }
+});
+authRouter.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await Prisma.user.findUnique({ where: { email } });
+        if (!user || user.password !== password) {
+            return res.status(401).json({ Message: "Invalid Credentials" });
+        }
+        const token = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: "4h" });
+        res.status(200).json({
+            Message: "Login Successful",
+            token,
+        });
+    }
+    catch (err) {
+        res.status(500).json({
+            Message: "Something went wrong",
             error: err,
         });
     }
