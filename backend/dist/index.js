@@ -7,7 +7,7 @@ app.get("/Health", (req, res) => {
         Message: "Index Route Working Fine"
     });
 });
-app.use("api/v1/", mainRouter);
+app.use("/api/v1", mainRouter);
 app.listen(4000, () => {
     console.log("Server Started at port 4000");
 });

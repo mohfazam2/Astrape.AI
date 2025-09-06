@@ -12,7 +12,7 @@ app.get("/Health", (req, res) => {
     });
 });
 
-app.use("api/v1/", mainRouter);
+app.use("/api/v1", mainRouter);
 
 
 
