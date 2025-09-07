@@ -2,14 +2,43 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import axios from "axios";
+import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function Signup() {
     const [showPassword, setShowPassword] = useState(false);
+    const [fullname, setFullname] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState(""); 
+    const router = useRouter();
+
+    const handleSignup = async (e:any) => {
+        e.preventDefault(); 
+        
+        const user = {
+            "name": fullname,
+            "email": email,
+            "password": password 
+        }
+        
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/signUp`, user);
+            console.log(response.data); 
+            toast.success("Signup successful! 🎉");
+            toast.success("Redirecting to Signin Page ↗️");
+            router.push("/signin");
+        } catch (err) {
+            console.error("Signup error:", err);
+            toast.error("Something went wrong 😞");
+        }
+    }
 
     return (
         <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex justify-center items-center p-6">
+            <Toaster position="top-right" />
             <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl max-w-6xl w-full">
-               
+
                 <div className="w-1/2 relative bg-gradient-to-br from-[#CBE4E8] to-[#A8D5E0] flex justify-center items-center p-8">
                     <div className="relative w-[500px] h-[550px] rounded-2xl overflow-hidden shadow-lg  transition-transform duration-700">
                         <Image
@@ -20,12 +49,11 @@ export default function Signup() {
                             draggable={false}
                         />
                     </div>
-                    
+
                     <div className="absolute top-20 left-10 w-20 h-20 bg-white/20 rounded-full blur-xl"></div>
                     <div className="absolute bottom-20 right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
                 </div>
 
-                
                 <div className="w-1/2 p-12 flex flex-col justify-center">
                     <div className="max-w-md mx-auto w-full">
                         <div className="mb-12">
@@ -35,12 +63,15 @@ export default function Signup() {
                             <p className="text-gray-500 text-lg">Join us and start your shopping today</p>
                         </div>
 
-                        <form className="space-y-8">
+                        <form className="space-y-8" onSubmit={handleSignup}>
                             <div className="animated-input">
                                 <input
                                     type="text"
                                     placeholder="Full Name"
+                                    value={fullname}
                                     className="w-full border-0 border-b-2 border-gray-200 focus:outline-none focus:border-[#DB4444] px-1 py-4 text-lg text-gray-800 bg-transparent placeholder-gray-400 transition-colors duration-300"
+                                    onChange={(e) => setFullname(e.target.value)}
+                                    required
                                 />
                             </div>
 
@@ -48,15 +79,21 @@ export default function Signup() {
                                 <input
                                     type="email"
                                     placeholder="Email Address"
+                                    value={email}
                                     className="w-full border-0 border-b-2 border-gray-200 focus:outline-none focus:border-[#DB4444] px-1 py-4 text-lg text-gray-800 bg-transparent placeholder-gray-400 transition-colors duration-300"
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
                                 />
                             </div>
 
                             <div className="animated-input relative">
                                 <input
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={password}
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Password"
                                     className="w-full border-0 border-b-2 border-gray-200 focus:outline-none focus:border-[#DB4444] px-1 py-4 pr-12 text-lg text-gray-800 bg-transparent placeholder-gray-400 transition-colors duration-300"
+                                    required
                                 />
                                 <button
                                     type="button"
@@ -78,7 +115,10 @@ export default function Signup() {
 
                             <div className="pt-3">
                                 <div className="bg-gradient-to-r from-[#DB4444] to-[#FF4444] rounded-2xl overflow-hidden relative group shadow-lg hover:shadow-xl transition-all duration-300">
-                                    <button className="flex justify-center items-center w-full h-10 text-white font-semibold text-sm relative z-10 transform transition-transform duration-200 active:scale-95">
+                                    <button 
+                                        type="submit"
+                                        className="flex justify-center items-center w-full h-10 text-white font-semibold text-sm relative z-10 transform transition-transform duration-200 active:scale-95"
+                                    >
                                         <span className="relative">Create Account</span>
                                     </button>
                                     <div className="absolute inset-0 bg-gradient-to-r from-[#FF4444] to-[#FF6B6B] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
@@ -93,7 +133,6 @@ export default function Signup() {
     after:transition-all after:duration-300 hover:after:w-full hover:text-[#FF4444] pb-1">
                                         <Link href="/signin" >Sign In</Link>
                                     </span>
-
                                 </p>
                             </div>
                         </form>
