@@ -1,6 +1,7 @@
 import express from "express"
 import { PrismaClient } from "@prisma/client"
 import { authMiddleware } from "../Middleware/index.js";
+import { authRouter } from "../auth/index.js";
 
 const Prisma = new PrismaClient();
 
@@ -49,3 +50,27 @@ productRouter.get("/fetch", authMiddleware, async (req, res) => {
     }
 });
 
+
+authRouter.put("/update/:id", authMiddleware, async (req, res) => {
+    const { id } = req.params;
+    const { name, price, imageUrl, category } = req.body;
+
+    try{
+        const updatedProduct = await Prisma.product.update({
+            where:{id: Number(id)},
+            data:{
+                name, price, imageUrl, category,
+            }
+        });
+
+        res.status(200).json({
+            Message: "Product Updated Successfully",
+            product: updatedProduct
+        });
+    } catch(err){
+        res.status(500).json({
+            Message: "Error Updating product",
+            error: err
+        });
+    }
+});
