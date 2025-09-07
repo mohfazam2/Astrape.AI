@@ -121,3 +121,32 @@ cartRouter.post("/update", authMiddleware, async (req: AuthRequest, res: Respons
         res.status(500).json({ Message: "Something went wrong", error: err });
     }
 });
+
+
+cartRouter.get("/list", authMiddleware, async (req: AuthRequest, res: Response) => {
+    const userId = req.user?.userId;
+
+    if (!userId) return res.status(401).json({ Message: "User not authenticated" });
+
+    try {
+        const cart = await Prisma.cart.findUnique({
+            where: { userId },
+            include: {
+                items: {
+                    include: {
+                        product: true
+                    }
+                }
+            }
+        });
+
+        if (!cart) return res.status(200).json({ Message: "Cart is empty", items: [] });
+
+        res.status(200).json({
+            Message: "Cart fetched successfully",
+            cart
+        });
+    } catch (err) {
+        res.status(500).json({ Message: "Something went wrong", error: err });
+    }
+});
