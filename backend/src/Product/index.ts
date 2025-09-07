@@ -51,7 +51,7 @@ productRouter.get("/fetch", authMiddleware, async (req, res) => {
 });
 
 
-authRouter.put("/update/:id", authMiddleware, async (req, res) => {
+productRouter.put("/update/:id", authMiddleware, async (req, res) => {
     const { id } = req.params;
     const { name, price, imageUrl, category } = req.body;
 
@@ -76,8 +76,8 @@ authRouter.put("/update/:id", authMiddleware, async (req, res) => {
 });
 
 
-authRouter.delete("/delete/:id", authMiddleware, async (req, res) => {
-    const { id } = req.query;
+productRouter.delete("/delete/:id", authMiddleware, async (req, res) => {
+    const { id } = req.params;
 
     try{
         await Prisma.product.delete({
