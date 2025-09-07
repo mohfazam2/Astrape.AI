@@ -50,6 +50,10 @@ export const Category = () => {
                     <h3 className="text-[48px]">Electronics</h3>
                     <button className="bg-[#DB4444] text-white h-14 w-38 rounded hover:bg-[#d65e5e] cursor-pointer">View All</button>
                 </div>
+
+                <div className="py-4">
+                    <Product />
+                </div>
             </div>
 
         </div>
@@ -61,8 +65,27 @@ export const Category = () => {
 
 const Product = () => {
     return (
-        <div>
+        <div className="min-h-[350px] max-w-[270px] border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white cursor-pointer">
+            <div className="min-h-[250px] flex justify-center items-center p-4">
+                <img 
+                    src="https://inventstore.in/wp-content/uploads/2023/04/iPhone_13_Blue.webp" 
+                    alt="Product Image" 
+                    className="h-[200px] object-contain"
+                />
+            </div>
 
+            <div className="flex flex-col px-4 pb-4 gap-2">
+                <span className="font-semibold text-lg text-gray-900 truncate">iPhone 13</span>
+
+                <div className="flex items-center gap-3">
+                    <span className="text-[#DB4444] font-bold text-lg">₹80,000</span>
+                    <span className="text-gray-400 line-through text-sm">₹90,000</span>
+                </div>
+
+                <div className="flex gap-1 text-yellow-400">
+                    ★★★★☆
+                </div>
+            </div>
         </div>
-    )
-}
+    );
+};
