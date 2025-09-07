@@ -2,13 +2,41 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import axios from "axios";
+import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function Signup() {
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
+    const handleSignin = async (e:any) => {
+        e.preventDefault(); 
+        
+        const user = {
+            "email": email,
+            "password": password 
+        }
+        
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/login`, user);
+            console.log(response.data); 
+            localStorage.setItem("JWT", (response.data as any).token);
+            localStorage.setItem("signedin", "true");
+            toast.success("Signin successful! 🎉");
+            toast.success("Redirecting to Home Page ↗️");
+            router.push("/");
+        } catch (err) {
+            console.error("Signin error:", err);
+            toast.error("Something went wrong 😞");
+        }
+    }
 
     return (
         <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex justify-center items-center p-6">
@@ -27,6 +55,7 @@ export default function Signup() {
 
                             <div className="animated-input">
                                 <input
+                                onChange={(e) => setEmail(e.target.value)}
                                     type="email"
                                     placeholder="Email Address"
                                     className="w-full border-0 border-b-2 border-gray-200 focus:outline-none focus:border-[#DB4444] px-1 py-4 text-lg text-gray-800 bg-transparent placeholder-gray-400 transition-colors duration-300"
@@ -35,6 +64,7 @@ export default function Signup() {
 
                             <div className="animated-input relative">
                                 <input
+                                onChange={(e) => setPassword(e.target.value)}
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Password"
                                     className="w-full border-0 border-b-2 border-gray-200 focus:outline-none focus:border-[#DB4444] px-1 py-4 pr-12 text-lg text-gray-800 bg-transparent placeholder-gray-400 transition-colors duration-300"
@@ -59,7 +89,7 @@ export default function Signup() {
 
                             <div className="pt-3">
                                 <div className="bg-gradient-to-r from-[#DB4444] to-[#FF4444] rounded-2xl overflow-hidden relative group shadow-lg hover:shadow-xl transition-all duration-300">
-                                    <button className="flex justify-center items-center w-full h-10 text-white font-semibold text-sm relative z-10 transform transition-transform duration-200 active:scale-95">
+                                    <button className="flex justify-center items-center w-full h-10 text-white font-semibold text-sm relative z-10 transform transition-transform duration-200 active:scale-95" onClick={handleSignin}>
                                         <span className="relative">Signin</span>
                                     </button>
                                     <div className="absolute inset-0 bg-gradient-to-r from-[#FF4444] to-[#FF6B6B] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
