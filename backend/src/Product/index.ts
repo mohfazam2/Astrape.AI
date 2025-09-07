@@ -74,3 +74,23 @@ authRouter.put("/update/:id", authMiddleware, async (req, res) => {
         });
     }
 });
+
+
+authRouter.delete("/delete/:id", authMiddleware, async (req, res) => {
+    const { id } = req.query;
+
+    try{
+        await Prisma.product.delete({
+            where:{id: Number(id)},
+        });
+
+        res.status(200).json({
+            Message: "Product deleted successfully",
+        })
+    } catch(err){
+        res.status(500).json({
+            Message: "Error Deleting Product",
+            error: err
+        });
+    }
+});
