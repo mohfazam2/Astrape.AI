@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Signup() {
     return (
@@ -70,7 +71,7 @@ export default function Signup() {
                                     <span className="relative text-[#DB4444] font-medium cursor-pointer ml-1 
     after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-[#FF4444] 
     after:transition-all after:duration-300 hover:after:w-full hover:text-[#FF4444] pb-1">
-                                        Sign in
+                                        <Link href="/login" >Sign In</ Link>
                                     </span>
 
                                 </p>
