@@ -16,7 +16,7 @@ export const Navbar = () => {
             <div className="w-full bg-[#000000] h-10 flex justify-center items-center">
                 <span className="text-[#FAFAFA] text-[14px] font-normal">Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</span>
             </div>
-            <div className="w-full py-8 bg-white text-black shadow">
+            <div className="w-full py-6 bg-white text-black shadow">
                 <div className="flex justify-between items-center max-w-6xl mx-auto px-6">
 
                     <div className="font-bold text-xl">SwiftCart</div>

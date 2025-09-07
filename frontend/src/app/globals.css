@@ -21,3 +21,14 @@
 .animated-input:focus-within::after {
     width: 100%;
 }
+
+
+html {
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+    width: 0;  
+    background: transparent;  
+}
