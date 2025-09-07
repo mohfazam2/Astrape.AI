@@ -44,7 +44,7 @@ export const Hero = () => {
 </div>
 
             <div>
-                <img src="/Hero1.webp" alt="Herosection first image" />
+                <img src="/Hero1.webp" alt="Herosection first image" draggable={false}/>
             </div>
         </div>
     )
