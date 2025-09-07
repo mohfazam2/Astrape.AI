@@ -5,28 +5,12 @@ export default function Signup() {
     return (
         <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex justify-center items-center p-6">
             <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl max-w-6xl w-full">
-               
-                <div className="w-1/2 relative bg-gradient-to-br from-[#CBE4E8] to-[#A8D5E0] flex justify-center items-center p-8">
-                    <div className="relative w-[500px] h-[550px] rounded-2xl overflow-hidden shadow-lg  transition-transform duration-700">
-                        <Image
-                            src="/auth-image.webp"
-                            alt="auth image"
-                            fill
-                            className="object-cover"
-                            draggable={false}
-                        />
-                    </div>
-                    
-                    <div className="absolute top-20 left-10 w-20 h-20 bg-white/20 rounded-full blur-xl"></div>
-                    <div className="absolute bottom-20 right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                </div>
 
-                
                 <div className="w-1/2 p-12 flex flex-col justify-center">
                     <div className="max-w-md mx-auto w-full">
                         <div className="mb-12">
                             <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent mb-3">
-                                Create Account
+                                Sign In to SwiftCart
                             </h1>
                             <p className="text-gray-500 text-lg">Join us and start your shopping today</p>
                         </div>
@@ -71,7 +55,7 @@ export default function Signup() {
                                     <span className="relative text-[#DB4444] font-medium cursor-pointer ml-1 
     after:content-[''] after:absolute after:left-0 after:bottom-0 after:w-0 after:h-[2px] after:bg-[#FF4444] 
     after:transition-all after:duration-300 hover:after:w-full hover:text-[#FF4444] pb-1">
-                                        <Link href="/signin" >Sign In</ Link>
+                                        <Link href="/signup" >Sign Up</ Link>
                                     </span>
 
                                 </p>
@@ -79,6 +63,24 @@ export default function Signup() {
                         </form>
                     </div>
                 </div>
+               
+                <div className="w-1/2 relative bg-gradient-to-br from-[#CBE4E8] to-[#A8D5E0] flex justify-center items-center p-8">
+                    <div className="relative w-[500px] h-[550px] rounded-2xl overflow-hidden shadow-lg  transition-transform duration-700">
+                        <Image
+                            src="/auth-image.webp"
+                            alt="auth image"
+                            fill
+                            className="object-cover"
+                            draggable={false}
+                        />
+                    </div>
+                    
+                    <div className="absolute top-20 left-10 w-20 h-20 bg-white/20 rounded-full blur-xl"></div>
+                    <div className="absolute bottom-20 right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+                </div>
+
+                
+                
             </div>
         </div>
     );
