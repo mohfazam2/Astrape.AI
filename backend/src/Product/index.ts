@@ -37,7 +37,7 @@ productRouter.post("/add", authMiddleware, async (req, res) => {
 });
 
 
-productRouter.get("/fetch", authMiddleware, async (req, res) => {
+productRouter.get("/fetch", async (req, res) => {
     try{
         const products = await Prisma.product.findMany();
 

@@ -1,91 +1,177 @@
-import { TabletSmartphone, Shirt, Book, Lamp, Apple, ShoppingCart, Heart } from "lucide-react";
+"use client"
 
-export const Category = () => {
-    return (
-        <div className="max-w-6xl mx-auto px-6 flex flex-col gap-6 h-full">
-            <div className="w-full h-[1px] bg-gray-300" />
-            <div className="flex items-center gap-4">
-                <div className="bg-[#DB4444] w-5 h-10 rounded" />
-                <span className="text-[#DB4444] text-[18px]">Cetegories</span>
-            </div>
-            <div>
-                <h3 className="text-[48px]">Browse By Category</h3>
-            </div>
-            <div className="flex w-full justify-between">
-                <div className="border-1 border-gray-300 h-36 w-36 flex flex-col justify-center items-center rounded-md hover:bg-[#DB4444] hover:cursor-pointer">
-                    <TabletSmartphone size={38} />
-                    <span className="py-2"> ELECTRONICS</span>
-                </div>
+import { useState, useEffect } from 'react';
+import { TabletSmartphone, Shirt, Book, Lamp, Apple } from "lucide-react";
+import axios from 'axios';
 
-                <div className="border-1 border-gray-300 h-36 w-36 flex flex-col justify-center items-center rounded-md hover:bg-[#DB4444] hover:cursor-pointer">
-                    <Shirt size={38} />
-                    <span className="py-2"> CLOTHING</span>
-                </div>
-
-                <div className="border-1 border-gray-300 h-36 w-36 flex flex-col justify-center items-center rounded-md hover:bg-[#DB4444] hover:cursor-pointer">
-                    <Book size={38} />
-                    <span className="py-2"> Books</span>
-                </div>
-
-                <div className="border-1 border-gray-300 h-36 w-36 flex flex-col justify-center items-center rounded-md hover:bg-[#DB4444] hover:cursor-pointer">
-                    <Lamp size={38} />
-                    <span className="py-2"> FURNITURE</span>
-                </div>
-
-                <div className="border-1 border-gray-300 h-36 w-36 flex flex-col justify-center items-center rounded-md hover:bg-[#DB4444] hover:cursor-pointer">
-                    <Apple size={38} />
-                    <span className="py-2"> GROCERIES</span>
-                </div>
-            </div>
-
-            <div className="w-full h-[1px] bg-gray-300" />
-            {/* product by each category */}
-            <div>
-                <div className="flex items-center gap-4">
-                    <div className="bg-[#DB4444] w-5 h-10 rounded" />
-                    <span className="text-[#DB4444] text-[18px]">Cetegories</span>
-                </div>
-
-                <div className="flex justify-between">
-                    <h3 className="text-[48px]">Electronics</h3>
-                    <button className="bg-[#DB4444] text-white h-14 w-38 rounded hover:bg-[#d65e5e] cursor-pointer">View All</button>
-                </div>
-
-                <div className="py-4">
-                    <Product />
-                </div>
-            </div>
-
-        </div>
-    )
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  imageUrl: string;
+  category: string;
+  createdAt: string;
 }
 
 
+interface ApiResponse {
+  data: Product[];
+}
 
+export const Category = () => {
+  const [selectedCategory, setSelectedCategory] = useState<string>('ELECTRONICS');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  const categories = [
+    { id: 'ELECTRONICS', name: 'ELECTRONICS', icon: <TabletSmartphone size={38} /> },
+    { id: 'CLOTHING', name: 'CLOTHING', icon: <Shirt size={38} /> },
+    { id: 'BOOKS', name: 'Books', icon: <Book size={38} /> },
+    { id: 'FURNITURE', name: 'FURNITURE', icon: <Lamp size={38} /> },
+    { id: 'GROCERIES', name: 'GROCERIES', icon: <Apple size={38} /> },
+  ];
 
-const Product = () => {
-    return (
-        <div className="min-h-[350px] max-w-[270px] border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white cursor-pointer">
-            <div className="min-h-[250px] flex justify-center items-center p-4">
-                <img 
-                    src="https://inventstore.in/wp-content/uploads/2023/04/iPhone_13_Blue.webp" 
-                    alt="Product Image" 
-                    className="h-[200px] object-contain"
-                />
-            </div>
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get<Product[]>('https://astrapeaibackend.vercel.app/api/v1/product/fetch');
+        
+    
+        const productsData = response.data as Product[];
+        setProducts(productsData);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+        console.error('Error fetching products:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-            <div className="flex flex-col px-4 pb-4 gap-2">
-                <span className="font-semibold text-lg text-gray-900 truncate">iPhone 13</span>
+    fetchProducts();
+  }, []);
 
-                <div className="flex items-center gap-3">
-                    <span className="text-[#DB4444] font-bold text-lg">₹80,000</span>
-                    <span className="text-gray-400 line-through text-sm">₹90,000</span>
-                </div>
+  const filteredProducts = products.filter(product => 
+    product.category === selectedCategory
+  );
 
-                <div className="flex gap-1 text-yellow-400">
-                    ★★★★☆
-                </div>
-            </div>
+  return (
+    <div className="max-w-6xl mx-auto px-6 flex flex-col gap-6 h-full">
+      <div className="w-full h-[1px] bg-gray-300" />
+      <div className="flex items-center gap-4">
+        <div className="bg-[#DB4444] w-5 h-10 rounded" />
+        <span className="text-[#DB4444] text-[18px]">Categories</span>
+      </div>
+      <div>
+        <h3 className="text-[48px]">Browse By Category</h3>
+      </div>
+      <div className="flex w-full justify-between">
+        {categories.map((category) => (
+          <div 
+            key={category.id}
+            className={`border-1 border-gray-300 h-36 w-36 flex flex-col justify-center items-center rounded-md hover:bg-[#DB4444] hover:cursor-pointer ${
+              selectedCategory === category.id ? 'bg-[#DB4444] text-white' : ''
+            }`}
+            onClick={() => setSelectedCategory(category.id)}
+          >
+            {category.icon}
+            <span className="py-2">{category.name}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="w-full h-[1px] bg-gray-300" />
+      
+      {/* Products by selected category */}
+      <div>
+        <div className="flex items-center gap-4">
+          <div className="bg-[#DB4444] w-5 h-10 rounded" />
+          <span className="text-[#DB4444] text-[18px]">Categories</span>
         </div>
-    );
+
+        <div className="flex justify-between">
+          <h3 className="text-[48px] capitalize">{selectedCategory.toLowerCase()}</h3>
+          <button className="bg-[#DB4444] text-white h-14 w-38 rounded hover:bg-[#d65e5e] cursor-pointer">
+            View All
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="py-8 flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#DB4444]"></div>
+          </div>
+        ) : error ? (
+          <div className="py-8 text-center text-red-500">
+            Error: {error}
+          </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="py-8 text-center">
+            <p className="text-xl text-gray-500">No products found in {selectedCategory} category</p>
+            <p className="text-gray-400 mt-2">Check back later for new items!</p>
+          </div>
+        ) : (
+          <div className="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {filteredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ProductCard = ({ product }: { product: Product }) => {
+ 
+  const discountPercent = Math.floor(Math.random() * 20) + 5;
+  const originalPrice = product.price / (1 - discountPercent / 100);
+  
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation(); 
+    
+    console.log('Added to cart:', product);
+    
+  };
+  
+  return (
+    <div className="min-h-[400px] max-w-[270px] border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white cursor-pointer">
+      <div className="min-h-[250px] flex justify-center items-center p-4">
+        <img 
+          src={product.imageUrl} 
+          alt={product.name} 
+          className="h-[200px] object-contain"
+          onError={(e) => {
+            
+            (e.target as HTMLImageElement).src = "https://via.placeholder.com/200x200?text=No+Image";
+          }}
+        />
+      </div>
+
+      <div className="flex flex-col px-4 pb-4 gap-2">
+        <span className="font-semibold text-lg text-gray-900 truncate">{product.name}</span>
+
+        <div className="flex items-center gap-3">
+          <span className="text-[#DB4444] font-bold text-lg">${product.price.toFixed(2)}</span>
+          <span className="text-gray-400 line-through text-sm">${originalPrice.toFixed(2)}</span>
+        </div>
+
+        <div className="flex gap-1 text-yellow-400 mb-3">
+          {"★".repeat(Math.floor(Math.random() * 3 + 3))}
+          {"☆".repeat(2)}
+          <span className="text-gray-400 text-sm ml-2">
+            ({Math.floor(Math.random() * 100 + 10)})
+          </span>
+        </div>
+
+        <button 
+          onClick={handleAddToCart}
+          className="w-full bg-[#DB4444] text-white py-2 px-4 rounded-lg hover:bg-[#c93939] transition-colors duration-200 font-medium"
+        >
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  );
 };
