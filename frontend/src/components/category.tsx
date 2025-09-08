@@ -14,7 +14,6 @@ interface Product {
   createdAt: string;
 }
 
-
 interface ApiResponse {
   data: Product[];
 }
@@ -24,6 +23,11 @@ export const Category = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
+
+  const PRODUCTS_PER_ROW = 4; // Based on lg:grid-cols-4
+  const ROWS_TO_SHOW = 1; // Only 1 row initially
+  const INITIAL_PRODUCTS_COUNT = PRODUCTS_PER_ROW * ROWS_TO_SHOW; // 4 products
   
   const categories = [
     { id: 'ELECTRONICS', name: 'ELECTRONICS', icon: <TabletSmartphone size={38} /> },
@@ -37,9 +41,8 @@ export const Category = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get<Product[]>('https://astrapeaibackend.vercel.app/api/v1/product/fetch');
+        const response = await axios.get<Product[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/product/fetch`);
         
-    
         const productsData = response.data as Product[];
         setProducts(productsData);
         setError(null);
@@ -54,9 +57,22 @@ export const Category = () => {
     fetchProducts();
   }, []);
 
+  // Reset showAll when category changes
+  useEffect(() => {
+    setShowAll(false);
+  }, [selectedCategory]);
+
   const filteredProducts = products.filter(product => 
     product.category === selectedCategory
   );
+
+  const handleViewToggle = () => {
+    setShowAll(!showAll);
+  };
+
+  // Determine which products to display
+  const displayedProducts = showAll ? filteredProducts : filteredProducts.slice(0, INITIAL_PRODUCTS_COUNT);
+  const hasMoreProducts = filteredProducts.length > INITIAL_PRODUCTS_COUNT;
 
   return (
     <div className="max-w-6xl mx-auto px-6 flex flex-col gap-6 h-full">
@@ -94,9 +110,14 @@ export const Category = () => {
 
         <div className="flex justify-between">
           <h3 className="text-[48px] capitalize">{selectedCategory.toLowerCase()}</h3>
-          <button className="bg-[#DB4444] text-white h-14 w-38 rounded hover:bg-[#d65e5e] cursor-pointer">
-            View All
-          </button>
+          {hasMoreProducts && !loading && filteredProducts.length > 0 && (
+            <button 
+              onClick={handleViewToggle}
+              className="bg-[#DB4444] text-white h-14 px-6 rounded hover:bg-[#d65e5e] cursor-pointer transition-colors"
+            >
+              {showAll ? 'Show Less' : `View All (${filteredProducts.length})`}
+            </button>
+          )}
         </div>
 
         {loading ? (
@@ -114,7 +135,7 @@ export const Category = () => {
           </div>
         ) : (
           <div className="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
+            {displayedProducts.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
@@ -123,56 +144,3 @@ export const Category = () => {
     </div>
   );
 };
-
-// const ProductCard = ({ product }: { product: Product }) => {
- 
-//   const discountPercent = Math.floor(Math.random() * 20) + 5;
-//   const originalPrice = product.price / (1 - discountPercent / 100);
-  
-//   const handleAddToCart = (e: React.MouseEvent) => {
-//     e.stopPropagation(); 
-    
-//     console.log('Added to cart:', product);
-    
-//   };
-  
-//   return (
-//     <div className="min-h-[400px] max-w-[270px] border border-gray-200 rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-300 bg-white cursor-pointer">
-//       <div className="min-h-[250px] flex justify-center items-center p-4">
-//         <img 
-//           src={product.imageUrl} 
-//           alt={product.name} 
-//           className="h-[200px] object-contain"
-//           onError={(e) => {
-            
-//             (e.target as HTMLImageElement).src = "https://via.placeholder.com/200x200?text=No+Image";
-//           }}
-//         />
-//       </div>
-
-//       <div className="flex flex-col px-4 pb-4 gap-2">
-//         <span className="font-semibold text-lg text-gray-900 truncate">{product.name}</span>
-
-//         <div className="flex items-center gap-3">
-//           <span className="text-[#DB4444] font-bold text-lg">${product.price.toFixed(2)}</span>
-//           <span className="text-gray-400 line-through text-sm">${originalPrice.toFixed(2)}</span>
-//         </div>
-
-//         <div className="flex gap-1 text-yellow-400 mb-3">
-//           {"★".repeat(Math.floor(Math.random() * 3 + 3))}
-//           {"☆".repeat(2)}
-//           <span className="text-gray-400 text-sm ml-2">
-//             ({Math.floor(Math.random() * 100 + 10)})
-//           </span>
-//         </div>
-
-//         <button 
-//           onClick={handleAddToCart}
-//           className="w-full bg-[#DB4444] text-white py-2 px-4 rounded-lg hover:bg-[#c93939] transition-colors duration-200 font-medium"
-//         >
-//           Add to Cart
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
