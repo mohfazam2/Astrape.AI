@@ -136,13 +136,19 @@ export const Navbar = () => {
 
                     {/* Desktop Right Side */}
                     <div className="hidden lg:flex gap-4 items-center">
-                        <div 
-                            className="relative group cursor-pointer"
-                            onClick={handleAddProductClick}
-                        >
-                            Add Product
-                            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-                        </div>
+                        <button 
+  className="relative group px-6 py-2 border-2 border-black bg-transparent text-black font-medium rounded-md overflow-hidden transition-all duration-300 hover:text-white cursor-pointer"
+  onClick={handleAddProductClick}
+>
+  <span className="relative z-10">Add Product</span>
+  
+  
+  <span className="absolute inset-0 bg-black transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0"></span>
+  
+  
+  <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+  
+</button>
 
                         <div 
                             className="relative group cursor-pointer"
