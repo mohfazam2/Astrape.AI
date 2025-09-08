@@ -4,7 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AddProductPopup } from "./AddProductPopup";
 import { CartModal } from "./CartModal";
-import { ShoppingCart, LogOut } from "lucide-react";
+import { ShoppingCart, LogOut, Menu, X } from "lucide-react";
 
 interface Product {
     id: number;
@@ -20,6 +20,7 @@ export const Navbar = () => {
     const [isAddProductOpen, setIsAddProductOpen] = useState(false);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -57,6 +58,7 @@ export const Navbar = () => {
 
     const handleCategoriesClick = (e: React.MouseEvent) => {
         e.preventDefault();
+        setIsMobileMenuOpen(false);
         
         if (pathname === '/') {
             window.dispatchEvent(new CustomEvent('scrollToCategories'));
@@ -70,6 +72,7 @@ export const Navbar = () => {
 
     const handleProductsClick = (e: React.MouseEvent) => {
         e.preventDefault();
+        setIsMobileMenuOpen(false);
         
         if (pathname === '/') {
             window.dispatchEvent(new CustomEvent('scrollToProducts'));
@@ -85,23 +88,35 @@ export const Navbar = () => {
         localStorage.removeItem("signedin");
         setIsSignedIn(false);
         setShowLogoutPopup(false);
+        setIsMobileMenuOpen(false);
         // Dispatch custom event for other components to listen
         window.dispatchEvent(new CustomEvent('userLoggedOut'));
         // Redirect to home or login page
         router.push('/');
     };
 
+    const handleAddProductClick = () => {
+        setIsAddProductOpen(true);
+        setIsMobileMenuOpen(false);
+    };
+
+    const handleCartClick = () => {
+        setIsCartOpen(true);
+        setIsMobileMenuOpen(false);
+    };
+
     return (
         <div className="border-b-1 border-b-gray-300">
-            <div className="w-full bg-[#000000] h-10 flex justify-center items-center">
-                <span className="text-[#FAFAFA] text-[14px] font-normal">Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</span>
+            <div className="w-full bg-[#000000] h-10 flex justify-center items-center px-4">
+                <span className="text-[#FAFAFA] text-[12px] sm:text-[14px] font-normal text-center">Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</span>
             </div>
-            <div className="w-full py-6 bg-white text-black shadow">
-                <div className="flex justify-between items-center max-w-6xl mx-auto px-6">
+            <div className="w-full py-4 sm:py-6 bg-white text-black shadow">
+                <div className="flex justify-between items-center max-w-6xl mx-auto px-4 sm:px-6">
 
-                    <div className="font-bold text-xl">SwiftCart</div>
+                    <div className="font-bold text-lg sm:text-xl">SwiftCart</div>
 
-                    <div className="flex gap-8">
+                    {/* Desktop Navigation */}
+                    <div className="hidden lg:flex gap-8">
                         <button
                             onClick={handleCategoriesClick}
                             className="relative group bg-transparent border-none cursor-pointer text-black text-base"
@@ -119,10 +134,11 @@ export const Navbar = () => {
                         </button>
                     </div>
 
-                    <div className="flex gap-4 items-center">
+                    {/* Desktop Right Side */}
+                    <div className="hidden lg:flex gap-4 items-center">
                         <div 
                             className="relative group cursor-pointer"
-                            onClick={() => setIsAddProductOpen(true)}
+                            onClick={handleAddProductClick}
                         >
                             Add Product
                             <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
@@ -130,7 +146,7 @@ export const Navbar = () => {
 
                         <div 
                             className="relative group cursor-pointer"
-                            onClick={() => setIsCartOpen(true)}
+                            onClick={handleCartClick}
                         >
                             <ShoppingCart />
                             <div className="absolute inset-0 rounded-full border-2 border-black scale-0 group-hover:scale-150 transition-transform duration-300"></div>
@@ -171,6 +187,82 @@ export const Navbar = () => {
                                 <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
                             </Link>
                         )}
+                    </div>
+
+                    {/* Mobile Right Side */}
+                    <div className="flex lg:hidden gap-3 items-center">
+                        <div 
+                            className="relative group cursor-pointer"
+                            onClick={handleCartClick}
+                        >
+                            <ShoppingCart size={20} />
+                        </div>
+
+                        {isSignedIn ? (
+                            <div className="relative group cursor-pointer">
+                                <img
+                                    src="/user.webp"
+                                    alt="user profile"
+                                    draggable={false}
+                                    className="w-5 h-5 object-cover"
+                                />
+                            </div>
+                        ) : null}
+
+                        <button
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="text-black focus:outline-none"
+                        >
+                            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                        </button>
+                    </div>
+                </div>
+
+                {/* Mobile Menu */}
+                <div className={`lg:hidden overflow-hidden transition-all duration-300 ${
+                    isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                }`}>
+                    <div className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-white">
+                        <div className="flex flex-col space-y-4">
+                            <button
+                                onClick={handleCategoriesClick}
+                                className="text-left py-2 text-black hover:text-gray-600 transition-colors"
+                            >
+                                Browse By Categories
+                            </button>
+                            
+                            <button
+                                onClick={handleProductsClick}
+                                className="text-left py-2 text-black hover:text-gray-600 transition-colors"
+                            >
+                                All Products
+                            </button>
+
+                            <button
+                                onClick={handleAddProductClick}
+                                className="text-left py-2 text-black hover:text-gray-600 transition-colors"
+                            >
+                                Add Product
+                            </button>
+
+                            {isSignedIn ? (
+                                <button
+                                    onClick={handleLogout}
+                                    className="flex items-center gap-2 text-left py-2 text-red-600 hover:text-red-700 transition-colors"
+                                >
+                                    <LogOut size={16} />
+                                    Logout
+                                </button>
+                            ) : (
+                                <Link 
+                                    href="/signup" 
+                                    className="text-left py-2 text-black hover:text-gray-600 transition-colors"
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                >
+                                    SignUp/Login
+                                </Link>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
