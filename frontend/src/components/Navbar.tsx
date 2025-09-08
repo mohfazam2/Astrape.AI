@@ -1,15 +1,30 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { AddProductPopup } from "./AddProductPopup";
+
+interface Product {
+    id: number;
+    name: string;
+    price: number;
+    imageUrl: string;
+    category: string;
+    createdAt: string;
+}
 
 export const Navbar = () => {
-
     const [isSignedIn, setIsSignedIn] = useState(false);
+    const [isAddProductOpen, setIsAddProductOpen] = useState(false);
 
     useEffect(() => {
         const signedIn = localStorage.getItem("signedin");
         setIsSignedIn(signedIn === "true");
     }, []);
+
+    const handleProductAdded = (newProduct: Product) => {
+        console.log('New product added:', newProduct);
+        // You can add additional logic here like refreshing product lists
+    };
 
     return (
         <div className="border-b-1 border-b-gray-300">
@@ -20,7 +35,6 @@ export const Navbar = () => {
                 <div className="flex justify-between items-center max-w-6xl mx-auto px-6">
 
                     <div className="font-bold text-xl">SwiftCart</div>
-
 
                     <div className="flex gap-8">
                         {[
@@ -33,14 +47,20 @@ export const Navbar = () => {
                                 className="relative group"
                             >
                                 {link.label}
-
                                 <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
                             </Link>
                         ))}
                     </div>
 
-
                     <div className="flex gap-4 items-center">
+                        <div 
+                            className="relative group cursor-pointer"
+                            onClick={() => setIsAddProductOpen(true)}
+                        >
+                            Add Product
+                            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                        </div>
+
                         <div className="relative group">
                             Cart
                             <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
@@ -62,11 +82,15 @@ export const Navbar = () => {
                                 <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
                             </Link>
                         )}
-
                     </div>
-
                 </div>
             </div>
-        </div >
+
+            <AddProductPopup
+                isOpen={isAddProductOpen}
+                onClose={() => setIsAddProductOpen(false)}
+                onProductAdded={handleProductAdded}
+            />
+        </div>
     );
 };
