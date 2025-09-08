@@ -1,7 +1,7 @@
-import { Hero } from "../components/hero";
-import { Category } from "../components/category";
-import Image from "next/image";
+import { Hero } from "@/components/hero";
+import { Category } from "@/components/category";
 import { Feature } from "@/components/Feature";
+import { AllProducts } from "@/components/AllProducts";
 
 export default function Home() {
   return (
@@ -9,6 +9,7 @@ export default function Home() {
       <Hero />
       <Category />
       <Feature />
+      <AllProducts />
     </div>
   );
 }
