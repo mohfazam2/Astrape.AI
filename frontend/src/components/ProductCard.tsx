@@ -126,11 +126,13 @@ const EditProductPopup = ({ isOpen, onClose, product, onProductUpdated, onProduc
         }
       );
 
+      // Close the modal first
+      onClose();
+
+      // Then call the update callback
       if (onProductUpdated) {
         onProductUpdated(response.data);
       }
-
-      onClose();
     } catch (err: any) {
       console.error('Error updating product:', err);
       
@@ -176,9 +178,13 @@ const EditProductPopup = ({ isOpen, onClose, product, onProductUpdated, onProduc
       // Close the modal first
       onClose();
 
-      // Then call the delete callback
+      // Force reload by calling the callback or refresh the page  
       if (onProductDeleted) {
+        // Signal parent to refetch products instead of updating individual product
         onProductDeleted(product.id);
+      } else {
+        // Fallback: force page reload if no callback
+        window.location.reload();
       }
     } catch (err: any) {
       console.error('Error deleting product:', err);

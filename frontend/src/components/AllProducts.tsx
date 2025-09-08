@@ -23,25 +23,43 @@ export const AllProducts = () => {
     const ROWS_TO_SHOW = 2;
     const INITIAL_PRODUCTS_COUNT = PRODUCTS_PER_ROW * ROWS_TO_SHOW; // 8 products
 
+    const fetchProducts = async () => {
+        try {
+            setLoading(true);
+            const response = await axios.get<Product[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/product/fetch`);
+
+            const productsData = response.data as Product[];
+            setProducts(productsData);
+            setError(null);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'An error occurred');
+            console.error('Error fetching products:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get<Product[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/product/fetch`);
-
-                const productsData = response.data as Product[];
-                setProducts(productsData);
-                setError(null);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'An error occurred');
-                console.error('Error fetching products:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchProducts();
     }, []);
+
+    // Handle product update
+    const handleProductUpdated = async (updatedProduct: Product) => {
+        setProducts(prevProducts => 
+            prevProducts.map(product => 
+                product.id === updatedProduct.id ? updatedProduct : product
+            )
+        );
+        // Refetch to ensure latest data
+        await fetchProducts();
+    };
+
+    // Handle product deletion
+    const handleProductDeleted = (deletedProductId: number) => {
+        setProducts(prevProducts => 
+            prevProducts.filter(product => product.id !== deletedProductId)
+        );
+    };
 
     const handleViewToggle = () => {
         setShowAll(!showAll);
@@ -78,7 +96,12 @@ export const AllProducts = () => {
                 <>
                     <div className="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {displayedProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard 
+                                key={product.id} 
+                                product={product}
+                                onProductUpdated={handleProductUpdated}
+                                onProductDeleted={handleProductDeleted}
+                            />
                         ))}
                     </div>
                     
