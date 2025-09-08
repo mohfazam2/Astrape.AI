@@ -44,7 +44,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
       [name]: value
     }));
     
-    // Clear error when user starts typing
     if (error) setError(null);
   };
 
@@ -66,7 +65,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
       return false;
     }
     
-    // Basic URL validation
     try {
       new URL(formData.imageUrl);
     } catch {
@@ -82,7 +80,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
     
     if (!validateForm()) return;
 
-    // Get JWT token from localStorage
     const token = localStorage.getItem('JWT');
     
     if (!token) {
@@ -112,12 +109,11 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
         }
       );
 
-      // Call the callback function if provided
       if (onProductAdded) {
         onProductAdded(response.data);
       }
 
-      // Reset form
+      
       setFormData({
         name: '',
         price: '',
@@ -125,15 +121,16 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
         category: 'ELECTRONICS'
       });
 
-      // Close popup
       onClose();
+
+      
+      window.location.reload();
 
     } catch (err: any) {
       console.error('Error adding product:', err);
       
       if (err.response?.status === 401) {
         setError('Authentication failed. Please login again.');
-        // Optionally, clear the invalid token
         localStorage.removeItem('JWT');
       } else if (err.response?.status === 403) {
         setError('You do not have permission to add products.');
@@ -165,7 +162,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
   return (
     <div className="fixed inset-0 bg-blur bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">Add New Product</h2>
           <button
@@ -177,7 +173,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
           </button>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md text-sm">
@@ -185,7 +180,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
             </div>
           )}
 
-          {/* Product Name */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Product Name *
@@ -202,7 +196,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
             />
           </div>
 
-          {/* Price */}
           <div>
             <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
               Price ($) *
@@ -221,7 +214,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
             />
           </div>
 
-          {/* Image URL */}
           <div>
             <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
               Image URL *
@@ -238,7 +230,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
             />
           </div>
 
-          {/* Category */}
           <div>
             <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
               Category *
@@ -259,7 +250,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
             </select>
           </div>
 
-          {/* Image Preview */}
           {formData.imageUrl && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Preview</label>
@@ -277,7 +267,6 @@ export const AddProductPopup = ({ isOpen, onClose, onProductAdded }: AddProductP
             </div>
           )}
 
-          {/* Buttons */}
           <div className="flex gap-3 pt-4">
             <button
               type="button"

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ProductCard } from "./ProductCard";
 import { Filter, X, ChevronDown } from "lucide-react";
 import axios from "axios"
@@ -32,9 +32,9 @@ export const AllProducts = () => {
         sortBy: 'newest'
     });
 
-    const PRODUCTS_PER_ROW = 4; // Based on lg:grid-cols-4
+    const PRODUCTS_PER_ROW = 4;
     const ROWS_TO_SHOW = 2;
-    const INITIAL_PRODUCTS_COUNT = PRODUCTS_PER_ROW * ROWS_TO_SHOW; // 8 products
+    const INITIAL_PRODUCTS_COUNT = PRODUCTS_PER_ROW * ROWS_TO_SHOW;
 
     const categories = [
         { value: 'all', label: 'All Categories' },
@@ -63,38 +63,88 @@ export const AllProducts = () => {
         { value: 'name-za', label: 'Name: Z to A' }
     ];
 
-    const fetchProducts = async () => {
+    const fetchProducts = useCallback(async (showLoading = true) => {
         try {
-            setLoading(true);
+            if (showLoading) setLoading(true);
             const response = await axios.get<Product[]>(`${process.env.NEXT_PUBLIC_BASE_URL}/product/fetch`);
 
             const productsData = response.data as Product[];
             setProducts(productsData);
             setError(null);
+
+            // Clear the flag after successful fetch
+            localStorage.removeItem('productAdded');
+            localStorage.removeItem('productAddedTimestamp');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
             console.error('Error fetching products:', err);
         } finally {
-            setLoading(false);
+            if (showLoading) setLoading(false);
         }
-    };
-
-    useEffect(() => {
-        fetchProducts();
     }, []);
 
-    // Handle product update
+    // Initial fetch
+    useEffect(() => {
+        fetchProducts();
+    }, [fetchProducts]);
+
+    // Check for localStorage flag periodically
+    useEffect(() => {
+        const checkForUpdates = () => {
+            const productAdded = localStorage.getItem('productAdded');
+            if (productAdded === 'true') {
+                console.log('New product detected, refreshing...');
+                fetchProducts(false);
+            }
+        };
+
+        
+        checkForUpdates();
+
+        
+        const interval = setInterval(checkForUpdates, 2000);
+
+        return () => clearInterval(interval);
+    }, [fetchProducts]);
+
+    
+    useEffect(() => {
+        const handleProductAdded = (event: CustomEvent) => {
+            console.log('Product added event received:', event.detail);
+            fetchProducts(false);
+        };
+
+        window.addEventListener('productAdded', handleProductAdded as EventListener);
+
+        return () => {
+            window.removeEventListener('productAdded', handleProductAdded as EventListener);
+        };
+    }, [fetchProducts]);
+
+    
+    useEffect(() => {
+        const handleFocus = () => {
+            const productAdded = localStorage.getItem('productAdded');
+            if (productAdded === 'true') {
+                fetchProducts(false);
+            }
+        };
+
+        window.addEventListener('focus', handleFocus);
+        return () => window.removeEventListener('focus', handleFocus);
+    }, [fetchProducts]);
+
+    
     const handleProductUpdated = async (updatedProduct: Product) => {
         setProducts(prevProducts => 
             prevProducts.map(product => 
                 product.id === updatedProduct.id ? updatedProduct : product
             )
         );
-        // Refetch to ensure latest data
-        await fetchProducts();
+        await fetchProducts(false);
     };
 
-    // Handle product deletion
+    
     const handleProductDeleted = (deletedProductId: number) => {
         setProducts(prevProducts => 
             prevProducts.filter(product => product.id !== deletedProductId)
@@ -106,7 +156,7 @@ export const AllProducts = () => {
             ...prev,
             [filterType]: value
         }));
-        setShowAll(false); // Reset to show initial count when filters change
+        setShowAll(false);
     };
 
     const clearFilters = () => {
@@ -120,16 +170,14 @@ export const AllProducts = () => {
 
     const hasActiveFilters = filters.category !== 'all' || filters.priceRange !== 'all' || filters.sortBy !== 'newest';
 
-    // Apply filters and sorting
+    
     const getFilteredProducts = () => {
         let filtered = [...products];
 
-        // Category filter
         if (filters.category !== 'all') {
             filtered = filtered.filter(product => product.category === filters.category);
         }
 
-        // Price range filter
         if (filters.priceRange !== 'all') {
             const [min, max] = filters.priceRange.split('-').map(p => p.replace('+', ''));
             filtered = filtered.filter(product => {
@@ -142,7 +190,6 @@ export const AllProducts = () => {
             });
         }
 
-        // Sorting
         switch (filters.sortBy) {
             case 'newest':
                 filtered.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -185,7 +232,6 @@ export const AllProducts = () => {
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0">
                 <h3 className="text-2xl sm:text-4xl lg:text-[48px] capitalize font-semibold">Explore Our Products</h3>
                 
-                {/* Filter Toggle Button */}
                 <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 xs:gap-3">
                     {hasActiveFilters && (
                         <button
@@ -220,11 +266,9 @@ export const AllProducts = () => {
                 </div>
             </div>
 
-            {/* Filters Panel */}
             {showFilters && (
                 <div className="bg-gray-50 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6 border border-gray-200">
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                        {/* Category Filter */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
                             <select
@@ -240,7 +284,6 @@ export const AllProducts = () => {
                             </select>
                         </div>
 
-                        {/* Price Range Filter */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
                             <select
@@ -256,7 +299,6 @@ export const AllProducts = () => {
                             </select>
                         </div>
 
-                        {/* Sort By Filter */}
                         <div className="sm:col-span-2 lg:col-span-1">
                             <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
                             <select
@@ -275,7 +317,6 @@ export const AllProducts = () => {
                 </div>
             )}
 
-            {/* Results Count */}
             {!loading && (
                 <div className="mb-4">
                     <p className="text-sm sm:text-base text-gray-600">
