@@ -71,13 +71,13 @@ export const Navbar = () => {
                     <div className="font-bold text-xl">SwiftCart</div>
 
                     <div className="flex gap-8">
-                        <Link
+                        {/* <Link
                             href="/"
                             className="relative group"
                         >
                             Home
                             <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-                        </Link>
+                        </Link> */}
                         
                         <button
                             onClick={handleCategoriesClick}

@@ -6,6 +6,7 @@ import { Category } from "@/components/category";
 import { Feature } from "@/components/Feature";
 import { AllProducts } from "@/components/AllProducts";
 import { NewArrival } from "@/components/NewArrival";
+import { Footer } from '@/components/Footer';
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string>('ELECTRONICS');
@@ -25,7 +26,7 @@ export default function Home() {
     const handleScrollToCategories = () => {
       categoryRef.current?.scrollIntoView({ behavior: 'smooth' });
     };
-    
+
     window.addEventListener('scrollToProducts', handleScrollToProducts);
     window.addEventListener('scrollToCategories', handleScrollToCategories);
 
@@ -49,6 +50,7 @@ export default function Home() {
         <AllProducts />
       </div>
       <NewArrival />
+      <Footer />
     </div>
   );
 }
