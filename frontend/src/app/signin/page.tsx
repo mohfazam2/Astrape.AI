@@ -11,13 +11,22 @@ export default function Signup() {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [errors, setErrors] = useState({ email: "", password: "" });
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
 
-    const handleSignin = async (e:any) => {
-        e.preventDefault(); 
+    const handleSignin = async (e: any) => {
+        e.preventDefault();
+        
+        if (!email || !password) {
+            toast.error("Please fill in all fields");
+            return;
+        }
+
+        setLoading(true);
         
         const user = {
             "email": email,
@@ -25,22 +34,50 @@ export default function Signup() {
         }
         
         try {
+            // Clear any existing authentication data first
+            localStorage.removeItem("JWT");
+            localStorage.removeItem("signedin");
+            
+            // Dispatch logout event to clear any cached data
+            window.dispatchEvent(new CustomEvent('userLoggedOut'));
+            
             const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`, user);
             console.log(response.data); 
+            
+            // Set new authentication data
             localStorage.setItem("JWT", (response.data as any).token);
             localStorage.setItem("signedin", "true");
+            
+            // Dispatch login event for components to update
             window.dispatchEvent(new CustomEvent('userLoggedIn'));
+            
             toast.success("Signin successful! 🎉");
             toast.success("Redirecting to Home Page ↗️");
-            router.push("/");
-        } catch (err) {
+            
+            // Small delay to show toast messages
+            setTimeout(() => {
+                router.push("/");
+            }, 1000);
+            
+        } catch (err: any) {
             console.error("Signin error:", err);
-            toast.error("Something went wrong 😞");
+            
+            // More specific error messages
+            if (err.response?.status === 401) {
+                toast.error("Invalid email or password");
+            } else if (err.response?.status >= 500) {
+                toast.error("Server error. Please try again later");
+            } else {
+                toast.error("Something went wrong. Please try again");
+            }
+        } finally {
+            setLoading(false);
         }
     }
 
     return (
         <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex justify-center items-center p-6">
+            <Toaster position="top-right" />
             <div className="flex bg-white rounded-3xl overflow-hidden shadow-2xl max-w-6xl w-full">
 
                 <div className="w-1/2 p-12 flex flex-col justify-center">
@@ -52,28 +89,34 @@ export default function Signup() {
                             <p className="text-gray-500 text-lg">Enter your credentials to continue your shopping</p>
                         </div>
 
-                        <form className="space-y-8">
+                        <form className="space-y-8" onSubmit={handleSignin}>
 
                             <div className="animated-input">
                                 <input
-                                onChange={(e) => setEmail(e.target.value)}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    value={email}
                                     type="email"
                                     placeholder="Email Address"
-                                    className="w-full border-0 border-b-2 border-gray-200 focus:outline-none focus:border-[#DB4444] px-1 py-4 text-lg text-gray-800 bg-transparent placeholder-gray-400 transition-colors duration-300"
+                                    disabled={loading}
+                                    className="w-full border-0 border-b-2 border-gray-200 focus:outline-none focus:border-[#DB4444] px-1 py-4 text-lg text-gray-800 bg-transparent placeholder-gray-400 transition-colors duration-300 disabled:opacity-50"
                                 />
+                                {errors.email && <p className="text-red-500 text-sm mt-2">{errors.email}</p>}
                             </div>
 
                             <div className="animated-input relative">
                                 <input
-                                onChange={(e) => setPassword(e.target.value)}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    value={password}
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Password"
-                                    className="w-full border-0 border-b-2 border-gray-200 focus:outline-none focus:border-[#DB4444] px-1 py-4 pr-12 text-lg text-gray-800 bg-transparent placeholder-gray-400 transition-colors duration-300"
+                                    disabled={loading}
+                                    className="w-full border-0 border-b-2 border-gray-200 focus:outline-none focus:border-[#DB4444] px-1 py-4 pr-12 text-lg text-gray-800 bg-transparent placeholder-gray-400 transition-colors duration-300 disabled:opacity-50"
                                 />
                                 <button
                                     type="button"
                                     onClick={togglePasswordVisibility}
-                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#DB4444] transition-colors duration-200 focus:outline-none"
+                                    disabled={loading}
+                                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-[#DB4444] transition-colors duration-200 focus:outline-none disabled:opacity-50"
                                 >
                                     {showPassword ? (
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -86,12 +129,24 @@ export default function Signup() {
                                         </svg>
                                     )}
                                 </button>
+                                {errors.password && <p className="text-red-500 text-sm mt-2">{errors.password}</p>}
                             </div>
 
                             <div className="pt-3">
                                 <div className="bg-gradient-to-r from-[#DB4444] to-[#FF4444] rounded-2xl overflow-hidden relative group shadow-lg hover:shadow-xl transition-all duration-300">
-                                    <button className="flex justify-center items-center w-full h-10 text-white font-semibold text-sm relative z-10 transform transition-transform duration-200 active:scale-95" onClick={handleSignin}>
-                                        <span className="relative">Signin</span>
+                                    <button 
+                                        type="submit"
+                                        disabled={loading}
+                                        className="flex justify-center items-center w-full h-10 text-white font-semibold text-sm relative z-10 transform transition-transform duration-200 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                                    >
+                                        {loading ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
+                                                <span className="relative">Signing in...</span>
+                                            </>
+                                        ) : (
+                                            <span className="relative">Signin</span>
+                                        )}
                                     </button>
                                     <div className="absolute inset-0 bg-gradient-to-r from-[#FF4444] to-[#FF6B6B] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out"></div>
                                 </div>
