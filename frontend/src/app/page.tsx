@@ -2,6 +2,7 @@ import { Hero } from "@/components/hero";
 import { Category } from "@/components/category";
 import { Feature } from "@/components/Feature";
 import { AllProducts } from "@/components/AllProducts";
+import { NewArrival } from "@/components/NewArrival";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <Category />
       <Feature />
       <AllProducts />
+      <NewArrival />
     </div>
   );
 }
