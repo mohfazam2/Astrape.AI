@@ -1,4 +1,8 @@
-export const Hero = () => {
+interface HeroProps {
+  onCategorySelect: (category: string) => void;
+}
+
+export const Hero = ({ onCategorySelect }: HeroProps) => {
     return(
         <div className="flex justify-between py-10 gap-4 max-w-6xl mx-auto px-6">
             <div className="flex flex-col justify-between">
@@ -6,7 +10,8 @@ export const Hero = () => {
                    after:content-[''] after:absolute after:left-0 after:bottom-0 
                    after:w-0 after:h-[2px] after:bg-black 
                    after:transition-all after:duration-300 
-                   hover:after:w-full">
+                   hover:after:w-full"
+        onClick={() => onCategorySelect('ELECTRONICS')}>
     ELECTRONICS
   </span>
 
@@ -14,7 +19,8 @@ export const Hero = () => {
                    after:content-[''] after:absolute after:left-0 after:bottom-0 
                    after:w-0 after:h-[2px] after:bg-black 
                    after:transition-all after:duration-300 
-                   hover:after:w-full">
+                   hover:after:w-full"
+        onClick={() => onCategorySelect('CLOTHING')}>
     CLOTHING
   </span>
 
@@ -22,7 +28,8 @@ export const Hero = () => {
                    after:content-[''] after:absolute after:left-0 after:bottom-0 
                    after:w-0 after:h-[2px] after:bg-black
                    after:transition-all after:duration-300 
-                   hover:after:w-full">
+                   hover:after:w-full"
+        onClick={() => onCategorySelect('BOOKS')}>
     BOOKS
   </span>
 
@@ -30,7 +37,8 @@ export const Hero = () => {
                    after:content-[''] after:absolute after:left-0 after:bottom-0 
                    after:w-0 after:h-[2px] after:bg-black 
                    after:transition-all after:duration-300 
-                   hover:after:w-full">
+                   hover:after:w-full"
+        onClick={() => onCategorySelect('FURNITURE')}>
     FURNITURE
   </span>
 
@@ -38,7 +46,8 @@ export const Hero = () => {
                    after:content-[''] after:absolute after:left-0 after:bottom-0 
                    after:w-0 after:h-[2px] after:bg-black 
                    after:transition-all after:duration-300 
-                   hover:after:w-full">
+                   hover:after:w-full"
+        onClick={() => onCategorySelect('GROCERIES')}>
     GROCERIES
   </span>
 </div>

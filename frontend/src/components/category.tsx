@@ -18,8 +18,13 @@ interface ApiResponse {
   data: Product[];
 }
 
-export const Category = () => {
-  const [selectedCategory, setSelectedCategory] = useState<string>('ELECTRONICS');
+interface CategoryProps {
+  selectedCategory?: string;
+  onCategoryChange?: (category: string) => void;
+}
+
+export const Category = ({ selectedCategory: externalSelectedCategory, onCategoryChange }: CategoryProps) => {
+  const [selectedCategory, setSelectedCategory] = useState<string>(externalSelectedCategory || 'ELECTRONICS');
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,6 +62,13 @@ export const Category = () => {
     fetchProducts();
   }, []);
 
+  // Update internal state when external prop changes
+  useEffect(() => {
+    if (externalSelectedCategory) {
+      setSelectedCategory(externalSelectedCategory);
+    }
+  }, [externalSelectedCategory]);
+
   // Reset showAll when category changes
   useEffect(() => {
     setShowAll(false);
@@ -78,6 +90,11 @@ export const Category = () => {
     setProducts(prevProducts => 
       prevProducts.filter(product => product.id !== deletedProductId)
     );
+  };
+
+  const handleCategorySelect = (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    onCategoryChange?.(categoryId);
   };
 
   const filteredProducts = products.filter(product => 
@@ -109,7 +126,7 @@ export const Category = () => {
             className={`border-1 border-gray-300 h-36 w-36 flex flex-col justify-center items-center rounded-md hover:bg-[#DB4444] hover:cursor-pointer ${
               selectedCategory === category.id ? 'bg-[#DB4444] text-white' : ''
             }`}
-            onClick={() => setSelectedCategory(category.id)}
+            onClick={() => handleCategorySelect(category.id)}
           >
             {category.icon}
             <span className="py-2">{category.name}</span>
