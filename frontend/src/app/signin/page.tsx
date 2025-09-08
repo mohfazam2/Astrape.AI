@@ -29,6 +29,7 @@ export default function Signup() {
             console.log(response.data); 
             localStorage.setItem("JWT", (response.data as any).token);
             localStorage.setItem("signedin", "true");
+            window.dispatchEvent(new CustomEvent('userLoggedIn'));
             toast.success("Signin successful! 🎉");
             toast.success("Redirecting to Home Page ↗️");
             router.push("/");
