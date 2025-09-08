@@ -4,6 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AddProductPopup } from "./AddProductPopup";
 import { CartModal } from "./CartModal";
+import {ShoppingCart} from "lucide-react"
 
 interface Product {
     id: number;
@@ -109,8 +110,9 @@ export const Navbar = () => {
                             className="relative group cursor-pointer"
                             onClick={() => setIsCartOpen(true)}
                         >
-                            <img src="/main_Cart.webp" alt="Cart" draggable={false} />
-                            <div className="absolute inset-0 rounded-full border-2 border-black scale-0 group-hover:scale-140 transition-transform duration-300"></div>
+                            {/* <img src="/main_Cart.webp" alt="Cart" draggable={false} /> */}
+                            <ShoppingCart />
+                            <div className="absolute inset-0 rounded-full border-2 border-black scale-0 group-hover:scale-150 transition-transform duration-300"></div>
                         </div>
 
                         {isSignedIn ? (
