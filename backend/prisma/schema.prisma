@@ -26,7 +26,7 @@ model User{
 model Cart{
   id        Int   @id @default(autoincrement())
   userId    Int   @unique
-  user      User  @relation(fields: [userId], references: [id])
+  user      User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     CartItem[]
 }
 
@@ -36,8 +36,8 @@ model CartItem {
   productId Int
   quantity  Int   @default(1)
 
-  cart      Cart   @relation(fields: [cartId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
+  cart      Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Product{
