@@ -59,7 +59,7 @@ export const Navbar = () => {
     const handleCategoriesClick = (e: React.MouseEvent) => {
         e.preventDefault();
         setIsMobileMenuOpen(false);
-        
+
         if (pathname === '/') {
             window.dispatchEvent(new CustomEvent('scrollToCategories'));
         } else {
@@ -73,7 +73,7 @@ export const Navbar = () => {
     const handleProductsClick = (e: React.MouseEvent) => {
         e.preventDefault();
         setIsMobileMenuOpen(false);
-        
+
         if (pathname === '/') {
             window.dispatchEvent(new CustomEvent('scrollToProducts'));
         } else {
@@ -106,7 +106,7 @@ export const Navbar = () => {
     };
 
     return (
-        <div className="border-b-1 border-b-gray-300">
+        <div className="border-b-1 border-b-gray-300 sticky top-0 z-50">
             <div className="w-full bg-[#000000] h-10 flex justify-center items-center px-4">
                 <span className="text-[#FAFAFA] text-[12px] sm:text-[14px] font-normal text-center">Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</span>
             </div>
@@ -124,7 +124,7 @@ export const Navbar = () => {
                             Browse By Categories
                             <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
                         </button>
-                        
+
                         <button
                             onClick={handleProductsClick}
                             className="relative group bg-transparent border-none cursor-pointer text-black text-base"
@@ -136,21 +136,21 @@ export const Navbar = () => {
 
                     {/* Desktop Right Side */}
                     <div className="hidden lg:flex gap-4 items-center">
-                        <button 
-  className="relative group px-6 py-2 border-2 border-black bg-transparent text-black font-medium rounded-md overflow-hidden transition-all duration-300 hover:text-white cursor-pointer"
-  onClick={handleAddProductClick}
->
-  <span className="relative z-10">Add Product</span>
-  
-  
-  <span className="absolute inset-0 bg-black transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0"></span>
-  
-  
-  <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-  
-</button>
+                        <button
+                            className="relative group px-6 py-2 border-2 border-black bg-transparent text-black font-medium rounded-md overflow-hidden transition-all duration-300 hover:text-white cursor-pointer"
+                            onClick={handleAddProductClick}
+                        >
+                            <span className="relative z-10">Add Product</span>
 
-                        <div 
+
+                            <span className="absolute inset-0 bg-black transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0"></span>
+
+
+                            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+
+                        </button>
+
+                        <div
                             className="relative group cursor-pointer"
                             onClick={handleCartClick}
                         >
@@ -159,7 +159,7 @@ export const Navbar = () => {
                         </div>
 
                         {isSignedIn ? (
-                            <div 
+                            <div
                                 className="relative"
                                 onMouseEnter={() => setShowLogoutPopup(true)}
                                 onMouseLeave={() => setShowLogoutPopup(false)}
@@ -173,11 +173,10 @@ export const Navbar = () => {
                                     />
                                     <div className="absolute inset-0 rounded-full border-2 border-black scale-0 group-hover:scale-170 transition-transform duration-300"></div>
                                 </div>
-                                
+
                                 {/* Logout Popup */}
-                                <div className={`absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 px-3 min-w-[120px] transition-all duration-200 z-50 ${
-                                    showLogoutPopup ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
-                                }`}>
+                                <div className={`absolute top-full right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg py-2 px-3 min-w-[120px] transition-all duration-200 z-50 ${showLogoutPopup ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'
+                                    }`}>
                                     <button
                                         onClick={handleLogout}
                                         className="flex items-center gap-2 w-full text-left px-2 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded transition-colors"
@@ -197,7 +196,7 @@ export const Navbar = () => {
 
                     {/* Mobile Right Side */}
                     <div className="flex lg:hidden gap-3 items-center">
-                        <div 
+                        <div
                             className="relative group cursor-pointer"
                             onClick={handleCartClick}
                         >
@@ -225,9 +224,8 @@ export const Navbar = () => {
                 </div>
 
                 {/* Mobile Menu */}
-                <div className={`lg:hidden overflow-hidden transition-all duration-300 ${
-                    isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-                }`}>
+                <div className={`lg:hidden overflow-hidden transition-all duration-300 ${isMobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                    }`}>
                     <div className="px-4 sm:px-6 py-4 border-t border-gray-200 bg-white">
                         <div className="flex flex-col space-y-4">
                             <button
@@ -236,7 +234,7 @@ export const Navbar = () => {
                             >
                                 Browse By Categories
                             </button>
-                            
+
                             <button
                                 onClick={handleProductsClick}
                                 className="text-left py-2 text-black hover:text-gray-600 transition-colors"
@@ -260,8 +258,8 @@ export const Navbar = () => {
                                     Logout
                                 </button>
                             ) : (
-                                <Link 
-                                    href="/signup" 
+                                <Link
+                                    href="/signup"
                                     className="text-left py-2 text-black hover:text-gray-600 transition-colors"
                                     onClick={() => setIsMobileMenuOpen(false)}
                                 >
