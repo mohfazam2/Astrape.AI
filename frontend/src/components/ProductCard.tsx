@@ -335,48 +335,48 @@ const EditProductPopup = ({ isOpen, onClose, product, onProductUpdated, onProduc
           )}
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={handleDelete}
-              disabled={loading || deleteLoading}
-              className="flex-1 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:opacity-50 transition-colors flex items-center justify-center"
-            >
-              {deleteLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                  Deleting...
-                </>
-              ) : (
-                <>
-                  <Trash2 size={16} className="mr-2" />
-                  Delete
-                </>
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={handleClose}
-              disabled={loading || deleteLoading}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading || deleteLoading}
-              className="flex-1 px-4 py-2 bg-[#DB4444] text-white rounded-md hover:bg-[#d65e5e] disabled:opacity-50 transition-colors flex items-center justify-center"
-            >
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                  Updating...
-                </>
-              ) : (
-                'Update Product'
-              )}
-            </button>
-          </div>
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+  <button
+    type="button"
+    onClick={handleDelete}
+    disabled={loading || deleteLoading}
+    className="flex-1 px-3 sm:px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:opacity-50 transition-colors flex items-center justify-center text-sm sm:text-base"
+  >
+    {deleteLoading ? (
+      <>
+        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
+        Deleting...
+      </>
+    ) : (
+      <>
+        <Trash2 size={16} className="mr-2" />
+        Delete
+      </>
+    )}
+  </button>
+  <button
+    type="button"
+    onClick={handleClose}
+    disabled={loading || deleteLoading}
+    className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-colors text-sm sm:text-base"
+  >
+    Cancel
+  </button>
+  <button
+    type="submit"
+    disabled={loading || deleteLoading}
+    className="flex-1 px-3 sm:px-4 py-2 bg-[#DB4444] text-white rounded-md hover:bg-[#d65e5e] disabled:opacity-50 transition-colors flex items-center justify-center text-sm sm:text-base"
+  >
+    {loading ? (
+      <>
+        <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
+        Updating...
+      </>
+    ) : (
+      'Update Product'
+    )}
+  </button>
+</div>
         </form>
       </div>
     </div>
