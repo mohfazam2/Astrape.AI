@@ -110,26 +110,47 @@ export const Category = ({ selectedCategory: externalSelectedCategory, onCategor
   const hasMoreProducts = filteredProducts.length > INITIAL_PRODUCTS_COUNT;
 
   return (
-    <div className="max-w-6xl mx-auto px-6 flex flex-col gap-6 h-full">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col gap-4 sm:gap-6 h-full">
       <div className="w-full h-[1px] bg-gray-300" />
       <div className="flex items-center gap-4">
-        <div className="bg-[#DB4444] w-5 h-10 rounded" />
-        <span className="text-[#DB4444] text-[18px]">Categories</span>
+        <div className="bg-[#DB4444] w-4 sm:w-5 h-8 sm:h-10 rounded" />
+        <span className="text-[#DB4444] text-sm sm:text-[18px]">Categories</span>
       </div>
       <div>
-        <h3 className="text-[48px]">Browse By Category</h3>
+        <h3 className="text-2xl sm:text-4xl lg:text-[48px] font-semibold">Browse By Category</h3>
       </div>
-      <div className="flex w-full justify-between">
+      
+      {/* Responsive categories grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6 w-full">
         {categories.map((category) => (
           <div 
             key={category.id}
-            className={`border-1 border-gray-300 h-36 w-36 flex flex-col justify-center items-center rounded-md hover:bg-[#DB4444] hover:cursor-pointer ${
-              selectedCategory === category.id ? 'bg-[#DB4444] text-white' : ''
+            className={`border border-gray-300 h-24 sm:h-32 lg:h-36 flex flex-col justify-center items-center rounded-md hover:bg-[#DB4444] hover:cursor-pointer transition-colors ${
+              selectedCategory === category.id ? 'bg-[#DB4444] text-white' : 'hover:text-white'
             }`}
             onClick={() => handleCategorySelect(category.id)}
           >
-            {category.icon}
-            <span className="py-2">{category.name}</span>
+            <div className="mb-1 sm:mb-2">
+              <TabletSmartphone size={category.id === 'ELECTRONICS' ? 24 : 0} className="sm:hidden" />
+              <Shirt size={category.id === 'CLOTHING' ? 24 : 0} className="sm:hidden" />
+              <Book size={category.id === 'BOOKS' ? 24 : 0} className="sm:hidden" />
+              <Lamp size={category.id === 'FURNITURE' ? 24 : 0} className="sm:hidden" />
+              <Apple size={category.id === 'GROCERIES' ? 24 : 0} className="sm:hidden" />
+              
+              <TabletSmartphone size={category.id === 'ELECTRONICS' ? 32 : 0} className="hidden sm:block lg:hidden" />
+              <Shirt size={category.id === 'CLOTHING' ? 32 : 0} className="hidden sm:block lg:hidden" />
+              <Book size={category.id === 'BOOKS' ? 32 : 0} className="hidden sm:block lg:hidden" />
+              <Lamp size={category.id === 'FURNITURE' ? 32 : 0} className="hidden sm:block lg:hidden" />
+              <Apple size={category.id === 'GROCERIES' ? 32 : 0} className="hidden sm:block lg:hidden" />
+              
+              {/* Desktop icons */}
+              <span className="hidden lg:block">
+                {category.icon}
+              </span>
+            </div>
+            <span className="text-xs sm:text-sm lg:text-base text-center px-1 leading-tight">
+              {category.name}
+            </span>
           </div>
         ))}
       </div>
@@ -139,16 +160,18 @@ export const Category = ({ selectedCategory: externalSelectedCategory, onCategor
       {/* Products by selected category */}
       <div>
         <div className="flex items-center gap-4">
-          <div className="bg-[#DB4444] w-5 h-10 rounded" />
-          <span className="text-[#DB4444] text-[18px]">Categories</span>
+          <div className="bg-[#DB4444] w-4 sm:w-5 h-8 sm:h-10 rounded" />
+          <span className="text-[#DB4444] text-sm sm:text-[18px]">Categories</span>
         </div>
 
-        <div className="flex justify-between">
-          <h3 className="text-[48px] capitalize">{selectedCategory.toLowerCase()}</h3>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0">
+          <h3 className="text-2xl sm:text-4xl lg:text-[48px] capitalize font-semibold">
+            {selectedCategory.toLowerCase()}
+          </h3>
           {hasMoreProducts && !loading && filteredProducts.length > 0 && (
             <button 
               onClick={handleViewToggle}
-              className="bg-[#DB4444] text-white h-14 px-6 rounded hover:bg-[#d65e5e] cursor-pointer transition-colors"
+              className="bg-[#DB4444] text-white h-12 sm:h-14 px-4 sm:px-6 rounded hover:bg-[#d65e5e] cursor-pointer transition-colors text-sm sm:text-base"
             >
               {showAll ? 'Show Less' : `View All (${filteredProducts.length})`}
             </button>
@@ -157,19 +180,19 @@ export const Category = ({ selectedCategory: externalSelectedCategory, onCategor
 
         {loading ? (
           <div className="py-8 flex justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#DB4444]"></div>
+            <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-t-2 border-b-2 border-[#DB4444]"></div>
           </div>
         ) : error ? (
-          <div className="py-8 text-center text-red-500">
-            Error: {error}
+          <div className="py-8 text-center text-red-500 px-4">
+            <p className="text-sm sm:text-base">Error: {error}</p>
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="py-8 text-center">
-            <p className="text-xl text-gray-500">No products found in {selectedCategory} category</p>
-            <p className="text-gray-400 mt-2">Check back later for new items!</p>
+          <div className="py-8 text-center px-4">
+            <p className="text-lg sm:text-xl text-gray-500">No products found in {selectedCategory} category</p>
+            <p className="text-gray-400 mt-2 text-sm sm:text-base">Check back later for new items!</p>
           </div>
         ) : (
-          <div className="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
             {displayedProducts.map((product) => (
               <ProductCard 
                 key={product.id} 
