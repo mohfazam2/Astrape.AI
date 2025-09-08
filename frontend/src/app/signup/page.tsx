@@ -23,7 +23,7 @@ export default function Signup() {
         }
         
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/signUp`, user);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/signUp`, user);
             console.log(response.data); 
             toast.success("Signup successful! 🎉");
             toast.success("Redirecting to Signin Page ↗️");

@@ -25,7 +25,7 @@ export default function Signup() {
         }
         
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/auth/login`, user);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`, user);
             console.log(response.data); 
             localStorage.setItem("JWT", (response.data as any).token);
             localStorage.setItem("signedin", "true");
