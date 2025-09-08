@@ -12,6 +12,12 @@ interface Product {
   category: string;
   createdAt: string;
 }
+interface CartResponse {
+  cart: {
+    items: CartItem[];
+  };
+}
+
 
 interface CartItem {
   id: number;
@@ -28,6 +34,8 @@ export const CartModal = ({ isOpen, onClose }: CartModalProps) => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [updatingItems, setUpdatingItems] = useState<Set<number>>(new Set());
+
 
   const fetchCartItems = async () => {
     const token = localStorage.getItem('JWT');
@@ -70,10 +78,12 @@ export const CartModal = ({ isOpen, onClose }: CartModalProps) => {
       return;
     }
 
+     setUpdatingItems(prev => new Set(prev).add(productId));
+
     try {
       await axios.post(
         `${process.env.NEXT_PUBLIC_BASE_URL}/cart/update`,
-        { productId, quantityChange }, // Fixed: Use quantityChange instead of quantity
+        { productId, quantityChange }, 
         {
           headers: {
             'Authorization': `Bearer ${token}`,
