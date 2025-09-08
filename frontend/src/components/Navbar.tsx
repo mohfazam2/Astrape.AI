@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AddProductPopup } from "./AddProductPopup";
-import { CartModal } from "./CartModal"; // Add this import
+import { CartModal } from "./CartModal";
 
 interface Product {
     id: number;
@@ -16,7 +17,9 @@ interface Product {
 export const Navbar = () => {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [isAddProductOpen, setIsAddProductOpen] = useState(false);
-    const [isCartOpen, setIsCartOpen] = useState(false); // Add this line
+    const [isCartOpen, setIsCartOpen] = useState(false);
+    const router = useRouter();
+    const pathname = usePathname();
 
     useEffect(() => {
         const signedIn = localStorage.getItem("signedin");
@@ -25,6 +28,36 @@ export const Navbar = () => {
 
     const handleProductAdded = (newProduct: Product) => {
         console.log('New product added:', newProduct);
+    };
+
+    const handleCategoriesClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        
+        if (pathname === '/') {
+            
+            window.dispatchEvent(new CustomEvent('scrollToCategories'));
+        } else {
+            
+            router.push('/');
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('scrollToCategories'));
+            }, 100);
+        }
+    };
+
+    const handleProductsClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        
+        if (pathname === '/') {
+            
+            window.dispatchEvent(new CustomEvent('scrollToProducts'));
+        } else {
+           
+            router.push('/');
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('scrollToProducts'));
+            }, 100);
+        }
     };
 
     return (
@@ -38,19 +71,29 @@ export const Navbar = () => {
                     <div className="font-bold text-xl">SwiftCart</div>
 
                     <div className="flex gap-8">
-                        {[
-                            { href: "/", label: "Home" },
-                            { href: "/products", label: "Products" },
-                        ].map((link) => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className="relative group"
-                            >
-                                {link.label}
-                                <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-                            </Link>
-                        ))}
+                        <Link
+                            href="/"
+                            className="relative group"
+                        >
+                            Home
+                            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                        </Link>
+                        
+                        <button
+                            onClick={handleCategoriesClick}
+                            className="relative group bg-transparent border-none cursor-pointer text-black text-base"
+                        >
+                            Browse By Categories
+                            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                        </button>
+                        
+                        <button
+                            onClick={handleProductsClick}
+                            className="relative group bg-transparent border-none cursor-pointer text-black text-base"
+                        >
+                            Products
+                            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                        </button>
                     </div>
 
                     <div className="flex gap-4 items-center">
@@ -64,7 +107,7 @@ export const Navbar = () => {
 
                         <div 
                             className="relative group cursor-pointer"
-                            onClick={() => setIsCartOpen(true)} // Add onClick handler
+                            onClick={() => setIsCartOpen(true)}
                         >
                             <img src="/main_Cart.webp" alt="Cart" draggable={false} />
                             <div className="absolute inset-0 rounded-full border-2 border-black scale-0 group-hover:scale-140 transition-transform duration-300"></div>
@@ -96,7 +139,6 @@ export const Navbar = () => {
                 onProductAdded={handleProductAdded}
             />
 
-            {/* Add CartModal */}
             <CartModal
                 isOpen={isCartOpen}
                 onClose={() => setIsCartOpen(false)}
