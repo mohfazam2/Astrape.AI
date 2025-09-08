@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AddProductPopup } from "./AddProductPopup";
+import { CartModal } from "./CartModal"; // Add this import
 
 interface Product {
     id: number;
@@ -15,6 +16,7 @@ interface Product {
 export const Navbar = () => {
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [isAddProductOpen, setIsAddProductOpen] = useState(false);
+    const [isCartOpen, setIsCartOpen] = useState(false); // Add this line
 
     useEffect(() => {
         const signedIn = localStorage.getItem("signedin");
@@ -23,7 +25,6 @@ export const Navbar = () => {
 
     const handleProductAdded = (newProduct: Product) => {
         console.log('New product added:', newProduct);
-        // You can add additional logic here like refreshing product lists
     };
 
     return (
@@ -61,9 +62,12 @@ export const Navbar = () => {
                             <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
                         </div>
 
-                        <div className="relative group">
-                            Cart
-                            <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                        <div 
+                            className="relative group cursor-pointer"
+                            onClick={() => setIsCartOpen(true)} // Add onClick handler
+                        >
+                            <img src="/main_Cart.webp" alt="Cart" draggable={false} />
+                            <div className="absolute inset-0 rounded-full border-2 border-black scale-0 group-hover:scale-140 transition-transform duration-300"></div>
                         </div>
 
                         {isSignedIn ? (
@@ -90,6 +94,12 @@ export const Navbar = () => {
                 isOpen={isAddProductOpen}
                 onClose={() => setIsAddProductOpen(false)}
                 onProductAdded={handleProductAdded}
+            />
+
+            {/* Add CartModal */}
+            <CartModal
+                isOpen={isCartOpen}
+                onClose={() => setIsCartOpen(false)}
             />
         </div>
     );

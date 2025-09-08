@@ -25,9 +25,9 @@ export const Category = () => {
   const [error, setError] = useState<string | null>(null);
   const [showAll, setShowAll] = useState(false);
 
-  const PRODUCTS_PER_ROW = 4; // Based on lg:grid-cols-4
-  const ROWS_TO_SHOW = 1; // Only 1 row initially
-  const INITIAL_PRODUCTS_COUNT = PRODUCTS_PER_ROW * ROWS_TO_SHOW; // 4 products
+  const PRODUCTS_PER_ROW = 4; 
+  const ROWS_TO_SHOW = 1; 
+  const INITIAL_PRODUCTS_COUNT = PRODUCTS_PER_ROW * ROWS_TO_SHOW; 
   
   const categories = [
     { id: 'ELECTRONICS', name: 'ELECTRONICS', icon: <TabletSmartphone size={38} /> },
